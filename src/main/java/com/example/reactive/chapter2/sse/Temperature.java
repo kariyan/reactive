@@ -6,6 +6,5 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class Temperature {
-
-    private double value;
+    private final double value;
 }
