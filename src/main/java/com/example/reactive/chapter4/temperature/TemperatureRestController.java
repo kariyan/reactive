@@ -1,4 +1,4 @@
-package com.example.reactive.chapter4.webflux;
+package com.example.reactive.chapter4.temperature;
 
 import com.example.reactive.chapter2.sse.Temperature;
 import org.springframework.boot.SpringApplication;
@@ -16,6 +16,8 @@ import java.util.Random;
 @RestController
 @SpringBootApplication
 public class TemperatureRestController {
+
+    private final Random random = new Random();
 
     public static void main(String[] args) {
         SpringApplication.run(TemperatureRestController.class, args);
@@ -38,7 +40,6 @@ public class TemperatureRestController {
     @GetMapping("/stream-temperature")
     public Flux<ServerSentEvent<Temperature>> streamTemperature() {
 
-        Random random = new Random();
         return Flux.interval(Duration.ofSeconds(2)).map(seq ->
                 ServerSentEvent.<Temperature>builder()
                         .data(new Temperature(random.nextGaussian() * 10 + 16))
