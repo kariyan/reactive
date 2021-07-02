@@ -1,23 +1,11 @@
 package com.example.reactive.chapter4.reactor;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.Optional;
-import java.util.Random;
-import java.util.UUID;
-import java.util.function.Function;
-import java.util.stream.IntStream;
-
+import jdk.nashorn.internal.ir.annotations.Ignore;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
-
-import jdk.nashorn.internal.ir.annotations.Ignore;
-import lombok.extern.slf4j.Slf4j;
 import reactor.core.Disposable;
 import reactor.core.publisher.BaseSubscriber;
 import reactor.core.publisher.ConnectableFlux;
@@ -26,6 +14,13 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 import reactor.util.function.Tuple2;
 import reactor.util.function.Tuples;
+import reactor.util.retry.Retry;
+
+import java.time.Duration;
+import java.time.Instant;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.IntStream;
 
 @Slf4j
 public class ReactorEssentialsTest {
@@ -368,6 +363,7 @@ public class ReactorEssentialsTest {
                 Transaction.beginTransaction(),
                 transaction -> transaction.insertRows(Flux.just("A", "B")),
                 Transaction::commit,
+                (transaction, throwable) -> transaction.rollback(),
                 Transaction::rollback
         ).subscribe(
                 d -> log.info("onNext: {}", d),
@@ -447,7 +443,7 @@ public class ReactorEssentialsTest {
         Flux.just("user-1")
                 .flatMap(user ->
                         recommendedBooks(user)
-                                .retryBackoff(5, Duration.ofMillis(100))
+                                .retryWhen(Retry.backoff(5, Duration.ofMillis(100)))
                                 .timeout(Duration.ofSeconds(3))
                                 .onErrorResume(e -> Flux.just("The Martian"))
                 )
@@ -558,7 +554,7 @@ public class ReactorEssentialsTest {
         };
 
         Flux<String> publisher = Flux.just("1", "2")
-                .compose(logUserInfo);
+                .transformDeferred(logUserInfo);
 
         publisher.subscribe();
         publisher.subscribe();
