@@ -1,4 +1,4 @@
-package wmp.edu.reactive.flux
+package wmp.edu.reactive.temperature.flux
 
 import org.springframework.http.codec.ServerSentEvent
 import org.springframework.web.bind.annotation.GetMapping

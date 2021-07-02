@@ -1,4 +1,4 @@
-package wmp.edu.reactive.flux
+package wmp.edu.reactive.temperature.flux
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

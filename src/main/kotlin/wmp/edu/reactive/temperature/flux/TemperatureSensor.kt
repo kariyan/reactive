@@ -1,4 +1,4 @@
-package wmp.edu.reactive.flux
+package wmp.edu.reactive.temperature.flux
 
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux

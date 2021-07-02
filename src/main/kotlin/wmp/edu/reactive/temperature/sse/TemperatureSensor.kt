@@ -1,4 +1,4 @@
-package wmp.edu.reactive.sse
+package wmp.edu.reactive.temperature.sse
 
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
